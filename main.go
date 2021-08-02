@@ -37,11 +37,14 @@ func main() {
 		sshOptions = append(sshOptions, SSHClientPort(req.Port))
 		sshOptions = append(sshOptions, SSHClientUsername(req.Username))
 		sshOptions = append(sshOptions, SSHClientPassword(req.Password))
-
+		if req.Timeout > defaultTimeout {
+			sshOptions = append(sshOptions, SSHClientTimeout(req.Timeout))
+		}
 		if req.PrivateKey != "" {
-			sshOptions = append(sshOptions, SSHClientPassphrase(req.Passphrase))
 			if req.Passphrase == "" {
 				sshOptions = append(sshOptions, SSHClientPassphrase(req.Password))
+			} else {
+				sshOptions = append(sshOptions, SSHClientPassphrase(req.Passphrase))
 			}
 			sshOptions = append(sshOptions, SSHClientPrivateKey(req.PrivateKey))
 		}
@@ -91,4 +94,6 @@ type RequestForward struct {
 	Passphrase string `json:"passphrase" xml:"passphrase" form:"passphrase" query:"passphrase"`
 
 	RemoteAddr string `json:"remote_addr" xml:"remote_addr" form:"remote_addr" query:"remote_addr"`
+
+	Timeout int `json:"timeout" xml:"timeout" form:"timeout" query:"timeout"` // 超时时间
 }

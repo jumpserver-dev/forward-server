@@ -19,6 +19,7 @@ type SSHClientOptions struct {
 	Passphrase   string
 	keyboardAuth ssh.KeyboardInteractiveChallenge
 	PrivateAuth  ssh.Signer
+	timeout      int //  秒单位
 }
 
 func (cfg *SSHClientOptions) AuthMethods() []ssh.AuthMethod {
@@ -99,6 +100,12 @@ func SSHClientPort(port int) SSHClientOption {
 	}
 }
 
+func SSHClientTimeout(timeout int) SSHClientOption {
+	return func(args *SSHClientOptions) {
+		args.timeout = timeout
+	}
+}
+
 func SSHClientPrivateAuth(privateAuth ssh.Signer) SSHClientOption {
 	return func(args *SSHClientOptions) {
 		args.PrivateAuth = privateAuth
@@ -111,10 +118,13 @@ func SSHClientKeyboardAuth(keyboardAuth ssh.KeyboardInteractiveChallenge) SSHCli
 	}
 }
 
+const defaultTimeout = 15
+
 func NewSSHClient(opts ...SSHClientOption) (*ssh.Client, error) {
 	cfg := &SSHClientOptions{
-		Host: "127.0.0.1",
-		Port: "22",
+		Host:    "127.0.0.1",
+		Port:    "22",
+		timeout: defaultTimeout,
 	}
 	for _, setter := range opts {
 		setter(cfg)
@@ -126,7 +136,7 @@ func NewSSHClientWithCfg(cfg *SSHClientOptions) (*ssh.Client, error) {
 	sshCfg := ssh.ClientConfig{
 		User:            cfg.Username,
 		Auth:            cfg.AuthMethods(),
-		Timeout:         5 * time.Minute,
+		Timeout:         time.Duration(cfg.timeout) * time.Second,
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 	destAddr := net.JoinHostPort(cfg.Host, cfg.Port)
