@@ -2,16 +2,19 @@ package main
 
 import (
 	"flag"
-	"github.com/sevlyar/go-daemon"
 	"log"
+
+	"github.com/sevlyar/go-daemon"
 )
 
 var (
 	daemonFlag bool
+	logPath    string
 )
 
 func init() {
 	flag.BoolVar(&daemonFlag, "d", false, "start as Daemon")
+	flag.StringVar(&logPath, "l", "/tmp/forward-server.log", "log file path")
 }
 
 func main() {
@@ -20,7 +23,7 @@ func main() {
 		ctx := &daemon.Context{
 			PidFileName: "/tmp/forward-server.pid",
 			PidFilePerm: 0644,
-			LogFileName: "forward-server.log",
+			LogFileName: logPath,
 			Umask:       027,
 			WorkDir:     "./",
 		}
