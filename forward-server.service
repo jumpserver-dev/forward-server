@@ -1,0 +1,14 @@
+[Unit]
+Description=JumpServer ssh forward server
+After=network.target
+
+[Service]
+Type=simple
+
+ExecStart=/usr/local/bin/forward-server
+Restart=always
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target
+Alias=forward-server.service
