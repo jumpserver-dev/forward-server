@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"net/http"
 	"sync"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type ForwardManager struct {
