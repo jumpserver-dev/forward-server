@@ -20,8 +20,7 @@ PLATFORM_LIST = \
 	darwin-amd64 \
 	darwin-arm64 \
 	linux-amd64 \
-	linux-arm64 \
-	linux-loong64
+	linux-arm64
 
 all-arch: $(PLATFORM_LIST)
 
